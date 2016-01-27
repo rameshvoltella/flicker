@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Flicker</string>
+    <string name="footer_info">Developed by Max Oliynick 2016</string>
+    <string name="facebook_app_id">1918426191716363</string>
+    <string name="another_name">Another Activity</string>
+    <string name="login_prompt">please, enter your email</string>
+    <string name="password_prompt">please, enter your password</string>
+    <string name="login_button">Sign in</string>
+</resources>

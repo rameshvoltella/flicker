@@ -1,0 +1,48 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/lightDark</item>
+        <item name="colorPrimaryDark">@color/lightDark</item>
+        <item name="colorAccent">#053130</item>
+        <item name="colorControlNormal">@color/primaryText</item>
+        <item name="colorControlActivated">@color/primaryText</item>
+    </style>
+
+    <style name="flickerButton">
+        <item name="android:fontFamily">sans-serif-thin</item>
+        <item name="android:background">@color/lightDark</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:typeface">monospace</item>
+        <item name="android:textSize">@dimen/flicker_medium_text</item>
+        <item name="android:textColor">@color/primaryText</item>/>
+    </style>
+
+    <style name="myFont">
+        <item name="android:fontFamily">sans-serif-thin</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:typeface">monospace</item>
+        <item name="android:textSize">@dimen/flicker_medium_text</item>
+        <item name="android:textColor">@color/primaryText</item>/>
+    </style>
+
+    <style name="myInput" parent="Widget.AppCompat.EditText">
+        <item name="android:textColor">@color/primaryText</item>
+        <item name="android:textColorSecondary">@color/primaryText</item>
+        <item name="android:textColorHint">@color/primaryText</item>
+        <item name="android:textSize">@dimen/flicker_large_text</item>
+        <item name="android:fontFamily">sans-serif-thin</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    
+    <style name="smallText">
+        <item name="android:textColor">@color/primaryText</item>
+        <item name="android:fontFamily">sans-serif-thin</item>
+        <item name="android:textSize">@dimen/flicker_small_text</item>
+    </style>
+
+</resources>
