@@ -2,6 +2,7 @@ package com.ua.max.oliynick.flicker.activity;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
@@ -9,11 +10,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.google.inject.Inject;
-import com.ua.max.oliynick.flicker.XMPPTCPConnectionHolder;
+import com.ua.max.oliynick.flicker.error.LoginException;
 import com.ua.max.oliynick.flicker.interfaces.ILoginController;
+import com.ua.max.oliynick.flicker.interfaces.ILoginModel;
 import com.ua.max.oliynick.flicker.model.LoginModel;
 import com.ua.max.oliynick.flicker.util.Settings;
+import com.ua.max.oliynick.flicker.util.XMPPTCPConnectionHolder;
 
 import oliynick.max.ua.com.flicker.R;
 import roboguice.activity.RoboActivity;
@@ -23,8 +25,8 @@ import roboguice.inject.InjectView;
 @ContentView(R.layout.login)
 public class LoginActivity extends RoboActivity implements ILoginController {
 
-    @Inject
-    private LoginModel model;
+    //@Inject
+    private ILoginModel model = new LoginModel();
 
     @InjectView(R.id.loginField)
     private EditText loginField;
@@ -50,66 +52,77 @@ public class LoginActivity extends RoboActivity implements ILoginController {
         //Initializing facebook sdk with app context
         //FacebookSdk.sdkInitialize(this);
         //Initializing xmpp connection to server
-        try {
-            XMPPTCPConnectionHolder.initInstance(Settings.getInstance());
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.e("Init", e.toString());
-            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-            dialogBuilder.setTitle(R.string.error).setMessage(R.string.connection_error).
-                    setPositiveButton(R.string.ok, null);
 
-            dialogBuilder.create().show();
-            // show exception dialog
-        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    XMPPTCPConnectionHolder.initInstance(Settings.getInstance());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e("Init", e.toString());
+                    /*AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+                    dialogBuilder.setTitle(R.string.error).setMessage(R.string.connection_error).
+                            setPositiveButton(R.string.ok, null);
+
+                    dialogBuilder.create().show();*/
+                    // show exception dialog
+                }
+            }
+        }).run();
+
+
 
     }
 
     @Override
     public void onLogin(View v) {
 
-        /*Handler h = new Handler(){
-            @Override
-            public void handleMessage(Message msg) {
-                if (msg.what == 0) {
-                    updateUI();
-                } else if(msg){
-                    showErrorDialog();
-                }
-            }
-        };*/
-
-        loginButton.setEnabled(false);
-
-        final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this);
+        final String authMessage = getResources().getString(R.string.auth_bar_mess);
+        final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Authenticating...");
-        //progressDialog.getWindow().setGravity(Gravity.CENTER_VERTICAL);
-        progressDialog.show();
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage(authMessage);
 
-        /*new android.os.Handler().post(new Runnable() {
+        AsyncTask<String, Void, String> loginTask = new AsyncTask<String, Void, String>() {
+
             @Override
-            public void run() {
-                try {
-                    Thread.sleep(9000);
-                    model.login(loginField.getText().toString(), passwordField.getText().toString(), false);
-                    Log.i("LoginActivity", "Successful login");
-                } catch (LoginException e) {
-                    e.printStackTrace();
-                    AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getApplicationContext());
-                    dialogBuilder.setTitle(R.string.error).setMessage(e.getMessage()).
+            protected void onPreExecute() {
+                super.onPreExecute();
+                loginButton.setEnabled(false);
+                progressDialog.show();
+            }
+
+            @Override
+            protected void onPostExecute(String errMessage) {
+                super.onPostExecute(errMessage);
+                loginButton.setEnabled(true);
+                progressDialog.dismiss();
+
+                if(errMessage != null) {
+                    AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(LoginActivity.this);
+                    dialogBuilder.setTitle(R.string.error).setMessage(errMessage).
                             setPositiveButton(R.string.ok, null);
 
                     dialogBuilder.create().show();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } finally {
-                    progressDialog.dismiss();
-                    loginButton.setEnabled(true);
                 }
             }
-        });*/
 
+            @Override
+            protected String doInBackground(String... params) {
+
+                try {
+                    model.login(params[0], params[1], false);
+                } catch (LoginException e) {
+                    e.printStackTrace();
+                    return e.getMessage();
+                }
+
+                return null;
+            }
+        };
+
+        loginTask.execute(loginField.getText().toString(), passwordField.getText().toString());
 
     }
 
@@ -118,7 +131,4 @@ public class LoginActivity extends RoboActivity implements ILoginController {
 
     }
 
-    private void invalidate() {
-
-    }
 }

@@ -1,4 +1,4 @@
-package com.ua.max.oliynick.flicker;
+package com.ua.max.oliynick.flicker.util;
 
 import android.util.Log;
 
@@ -17,6 +17,8 @@ import java.io.IOException;
 public class XMPPTCPConnectionHolder extends XMPPTCPConnection {
 
     private static XMPPTCPConnectionHolder instance = null;
+
+    private final BooleanObservable successfulLogin = new BooleanObservable(false);
 
     private XMPPTCPConnectionHolder(final XMPPTCPConnectionConfiguration config) {
         super(config);
@@ -45,9 +47,14 @@ public class XMPPTCPConnectionHolder extends XMPPTCPConnection {
         return builder.build();
     }
 
+    public final BooleanObservable getLoginObservable() {
+        return successfulLogin;
+    }
+
     @Override
     protected void afterSuccessfulLogin(boolean resumed) throws SmackException.NotConnectedException {
         super.afterSuccessfulLogin(resumed);
+        successfulLogin.setValue(true);
         Log.d("success login", "successfull login " + resumed);
     }
 }

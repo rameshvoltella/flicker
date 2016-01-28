@@ -17,6 +17,9 @@
 
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
 
+        <meta-data android:name="roboguice.modules"
+            android:value="com.ua.max.oliynick.flicker.roboguice.Bindings" />
+
         <activity android:name="com.ua.max.oliynick.flicker.activity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

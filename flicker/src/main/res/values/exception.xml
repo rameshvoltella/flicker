@@ -4,7 +4,13 @@
     <string name="connection_error">Application cannot connect to external server, please, check
     your Internet connection</string>
     <string name="ok">Ok</string>
-    <string name="empty_login">Email field shouldn\'t be empty</string>
+    <string name="invalid_input">Input is invalid</string>
+    <string name="empty_email">Email field shouldn\'t be empty</string>
+    <string name="short_email">Email is too short</string>
+    <string name="long_email">Email is too long</string>
+    <string name="short_pass">Password is too short</string>
+    <string name="long_pass">Password is too long</string>
+    <string name="invalid_email">Given login is invalid. Please, try entering valid email</string>
     <string name="empty_password">Password field shouldn\'t be empty</string>
     <string name="server_error">External server error</string>
     <string name="internal_error">Internal application error</string>
