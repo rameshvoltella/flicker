@@ -1,7 +1,8 @@
 package com.ua.max.oliynick.flicker.error;
 
 /**
- * Created by Максим on 26.01.2016.
+ * Describes an error which raised while signing in.
+ * <br/>Created by Максим on 26.01.2016.
  */
 public class LoginException extends Throwable {
 

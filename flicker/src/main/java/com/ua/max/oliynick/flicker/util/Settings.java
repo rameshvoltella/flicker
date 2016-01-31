@@ -23,10 +23,15 @@ public class Settings implements ISettings {
     private static final String SEND_PRESENCE_KEY = "sendPresence";
     private static final String SAVE_CREDENTIALS_KEY = "saveCredentials";
     private static final String DEFAULT_SETTINGS_KEY = "defaultSettings";
+    private static final String PASS_KEYSTORE = "password";
+
+    private static final String DEFAULT_KEYSTORE = "flicker_keystore";
 
     private SharedPreferences preferences;
+    private SharedPreferences.Editor editor;
     private String userLogin;
     private Context context;
+    //private ISecuredDataProvider provider;
 
     private static ISettings instance = null;
 
@@ -68,6 +73,7 @@ public class Settings implements ISettings {
     public void loadFor(String login) {
         this.userLogin = login;
         this.preferences = context.getSharedPreferences(Settings.buildLocation(login), Context.MODE_PRIVATE);
+        this.editor = preferences.edit();
     }
 
     @Override
@@ -77,7 +83,8 @@ public class Settings implements ISettings {
 
     @Override
     public void setPort(int port) {
-        preferences.edit().putInt(PORT_KEY, port);
+        editor.putInt(PORT_KEY, port);
+        editor.commit();
     }
 
     @Override
@@ -87,7 +94,8 @@ public class Settings implements ISettings {
 
     @Override
     public void setConnectionTimeout(int timeout) {
-        preferences.edit().putInt(TIMEOUT_KEY, timeout);
+        editor.putInt(TIMEOUT_KEY, timeout);
+        editor.commit();
     }
 
     @Override
@@ -102,13 +110,15 @@ public class Settings implements ISettings {
 
     @Override
     public void setHost(String host) {
-        preferences.edit().putString(HOST_KEY, host);
+        editor.putString(HOST_KEY, host);
+        editor.commit();
     }
 
     @Override
     public void setServiceName(String serviceName) {
-        preferences.edit().putString(SERVICE_NAME_KEY, serviceName == null ?
+        editor.putString(SERVICE_NAME_KEY, serviceName == null ?
                 DEFAULT_SERVICE_NAME : serviceName);
+        editor.commit();
     }
 
     @Override
@@ -118,7 +128,8 @@ public class Settings implements ISettings {
 
     @Override
     public void setCompressionEnabled(boolean enabled) {
-        preferences.edit().putBoolean(COMPRESSION_ENABLED_KEY, enabled);
+        editor.putBoolean(COMPRESSION_ENABLED_KEY, enabled);
+        editor.commit();
     }
 
     @Override
@@ -128,17 +139,45 @@ public class Settings implements ISettings {
 
     @Override
     public void setSendPresence(boolean sendPresence) {
-        preferences.edit().putBoolean(SEND_PRESENCE_KEY, sendPresence);
+        editor.putBoolean(SEND_PRESENCE_KEY, sendPresence);
+        editor.commit();
     }
 
     @Override
     public void setSaveAuthData(boolean save) {
-        preferences.edit().putBoolean(SAVE_CREDENTIALS_KEY, save);
+        editor.putBoolean(SAVE_CREDENTIALS_KEY, save);
+        editor.commit();
     }
 
     @Override
     public boolean isSaveAuthData() {
         return preferences.getBoolean(SAVE_CREDENTIALS_KEY, true);
+    }
+
+    @Override
+    public boolean setCredentials(String login, String password) {
+        //FIXME should be replaced with secured data provider!
+
+        SharedPreferences preferences = context.getSharedPreferences(DEFAULT_SETTINGS_KEY, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("login", login);
+        editor.putString("password", password);
+
+        return editor.commit();
+    }
+
+    @Override
+    public String getSavedPassword() {
+        //FIXME should be replaced with secured data provider!
+        SharedPreferences preferences = context.getSharedPreferences(DEFAULT_SETTINGS_KEY, Context.MODE_PRIVATE);
+        return preferences.getString("password", null);
+    }
+
+    @Override
+    public String getSavedLogin() {
+        //FIXME should be replaced with secured data provider!
+        SharedPreferences preferences = context.getSharedPreferences(DEFAULT_SETTINGS_KEY, Context.MODE_PRIVATE);
+        return preferences.getString("login", null);
     }
 
     private static String buildLocation(final String login) {

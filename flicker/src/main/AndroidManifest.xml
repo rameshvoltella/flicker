@@ -3,10 +3,7 @@
     package="oliynick.max.ua.com.flicker">
 
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
-    <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
-    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
-    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -15,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+       <!-- <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>-->
 
         <meta-data android:name="roboguice.modules"
             android:value="com.ua.max.oliynick.flicker.roboguice.Bindings" />
@@ -32,8 +29,8 @@
             android:label="@string/app_name" />-->
     </application>
 
-    <provider android:authorities="com.facebook.app.FacebookContentProvider1918426191716363"
+    <!--<provider android:authorities="com.facebook.app.FacebookContentProvider1918426191716363"
         android:name="com.facebook.FacebookContentProvider"
-        android:exported="true" />
+        android:exported="true" />-->
 
 </manifest>

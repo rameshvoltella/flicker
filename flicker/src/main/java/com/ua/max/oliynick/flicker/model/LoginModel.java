@@ -5,6 +5,7 @@ import android.util.Log;
 import com.ua.max.oliynick.flicker.error.LoginException;
 import com.ua.max.oliynick.flicker.interfaces.ILoginModel;
 import com.ua.max.oliynick.flicker.interfaces.ISettings;
+import com.ua.max.oliynick.flicker.util.AppConstant;
 import com.ua.max.oliynick.flicker.util.Settings;
 import com.ua.max.oliynick.flicker.util.ValidationResult;
 import com.ua.max.oliynick.flicker.util.XMPPTCPConnectionHolder;
@@ -18,12 +19,14 @@ import java.util.Observable;
 import java.util.Observer;
 
 import oliynick.max.ua.com.flicker.R;
+import roboguice.inject.ContextSingleton;
 import roboguice.inject.InjectResource;
 
 /**
  * An implementation of ILoginModel interface
  * Created by Максим on 26.01.2016.
  */
+@ContextSingleton
 public class LoginModel implements ILoginModel {
 
     @InjectResource(R.string.invalid_input)
@@ -53,7 +56,10 @@ public class LoginModel implements ILoginModel {
     @InjectResource(R.string.internal_error)
     private String internalError;
 
-    private final Observer sucLoginObs;
+    @InjectResource(R.string.login_xmpp_err)
+    private String xmppErr;
+
+    private Observer sucLoginObs;
 
     public LoginModel() {
 
@@ -65,12 +71,11 @@ public class LoginModel implements ILoginModel {
             }
         };
 
+       // XMPPTCPConnectionHolder.getInstance().getLoginObservable().addObserver(sucLoginObs);
     }
 
     @Override
-    public void login(String login, String password, LoginService service, boolean saveCredentials) throws LoginException {
-
-        XMPPTCPConnectionHolder.getInstance().getLoginObservable().addObserver(sucLoginObs);
+    public void login(String login, String password, LoginService service) throws LoginException {
 
         //User's input validation
         final ValidationResult emailValidator = validateEmail(login);
@@ -100,9 +105,10 @@ public class LoginModel implements ILoginModel {
             throw new LoginException(msg.toString());
         }
 
+        XMPPTCPConnection connection = XMPPTCPConnectionHolder.getInstance();
+
         try {
 
-            XMPPTCPConnection connection = XMPPTCPConnectionHolder.getInstance();
             ISettings settings = Settings.getInstance();
 
             if(!connection.isConnected()) {
@@ -111,42 +117,53 @@ public class LoginModel implements ILoginModel {
 
             connection.login(login, password);
 
-            if(saveCredentials && !settings.isSaveAuthData()) {
-                Settings.getInstance().setSaveAuthData(true);
+            if(settings.isSaveAuthData()) {
+                settings.setSaveAuthData(true);
+            } else {
+                settings.setSaveAuthData(false);
             }
 
         } catch (XMPPException e) {
             e.printStackTrace();
-            throw new LoginException(internalError);
+            Log.d("exc", "xmppexc " + e.getMessage());
+            connection.disconnect();
+            throw new LoginException(xmppErr);
         } catch (SmackException e) {
             e.printStackTrace();
-            throw new LoginException(internalError);
+            Log.d("exc", "smackexc " + e.getMessage());
+            throw new LoginException(e.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
+            Log.d("exc", "ioexc " + e.getMessage());
             throw new LoginException(internalError);
         }
 
     }
 
     @Override
-    public void login(String login, String password, boolean saveCredentials) throws LoginException {
-        login(login, password, LoginService.Xmpp, saveCredentials);
+    public void login(String login, String password) throws LoginException {
+        login(login, password, LoginService.Xmpp);
     }
 
     @Override
-    public boolean isSaveAuthData() {
+    public boolean isSavedAuthData() {
         return Settings.getInstance().isSaveAuthData();
     }
 
     @Override
-    public void setSaveAuthData(boolean save) {
-        Settings.getInstance().setSaveAuthData(save);
+    public String getSavedLogin() {
+        return Settings.getInstance().getSavedLogin();
+    }
+
+    @Override
+    public String getSavedPassword() {
+        return Settings.getInstance().getSavedPassword();
     }
 
     @Override
     public ValidationResult validateEmail(String login) {
 
-        /*if(login == null || login.length() == 0)
+        if(login == null || login.length() == 0)
             return new ValidationResult(false, emptyEmail);
 
         int length = login.length();
@@ -157,7 +174,7 @@ public class LoginModel implements ILoginModel {
         if(length > AppConstant.MAX_EMAIL_LEN)
             return new ValidationResult(false, longEmail);
 
-        if(!EmailUtils.isValidEmail(login))
+       /* if(!EmailUtils.isValidEmail(login))
             return  new ValidationResult(false, invalidEmail);*/
 
         return new ValidationResult();
@@ -166,7 +183,7 @@ public class LoginModel implements ILoginModel {
     @Override
     public ValidationResult validatePassword(String password) {
 
-       /* if(password == null || password.length() == 0)
+        if(password == null || password.length() == 0)
             return new ValidationResult(false, emptyPassword);
 
         int length = password.length();
@@ -175,7 +192,7 @@ public class LoginModel implements ILoginModel {
             return new ValidationResult(false, shortPassword);
 
         if(length > AppConstant.MAX_PASS_LEN)
-            return new ValidationResult(false, longPassword);*/
+            return new ValidationResult(false, longPassword);
 
         return new ValidationResult();
     }

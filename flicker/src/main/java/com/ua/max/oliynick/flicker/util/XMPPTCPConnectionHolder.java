@@ -31,11 +31,16 @@ public class XMPPTCPConnectionHolder extends XMPPTCPConnection {
         }
     }
 
+    public static boolean isInit() {
+        return instance != null;
+    }
+
     public static XMPPTCPConnectionHolder getInstance() {
         return instance;
     }
 
     private static XMPPTCPConnectionConfiguration buildConfig(final ISettings settings) {
+
         XMPPTCPConnectionConfiguration.Builder builder = XMPPTCPConnectionConfiguration.builder();
         builder.setHost(settings.getHost()).
                 setServiceName(settings.getServiceName()).
@@ -44,7 +49,7 @@ public class XMPPTCPConnectionHolder extends XMPPTCPConnection {
                 setSendPresence(settings.isSendPresence()).
                 setConnectTimeout(settings.getConnectionTimeout());
 
-        return builder.build();
+        return builder.setDebuggerEnabled(true).build();
     }
 
     public final BooleanObservable getLoginObservable() {

@@ -9,7 +9,6 @@ android {
             storePassword 'Ghn75lfmQl'
         }
     }
-
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
     defaultConfig {
@@ -24,6 +23,8 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    productFlavors {
     }
 }
 
@@ -46,6 +47,6 @@ dependencies {
     compile 'org.igniterealtime.smack:smack-android:4.1.0'
     compile 'org.igniterealtime.smack:smack-tcp:4.1.0'
     compile 'com.facebook.android:facebook-android-sdk:4.7.0'
-    compile 'org.roboguice:roboguice:3.0.1'
+    compile 'org.roboguice:roboguice:3.0.+'
     provided 'org.roboguice:roboblender:3.0.1'
 }

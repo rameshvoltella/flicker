@@ -36,4 +36,10 @@ public interface ISettings {
     public void setSaveAuthData(final boolean save);
 
     public boolean isSaveAuthData();
+
+    public boolean setCredentials(final String login, final String password);
+
+    public String getSavedPassword();
+
+    public String getSavedLogin();
 }

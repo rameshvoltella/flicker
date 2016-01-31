@@ -14,4 +14,8 @@
     <string name="empty_password">Password field shouldn\'t be empty</string>
     <string name="server_error">External server error</string>
     <string name="internal_error">Internal application error</string>
+    <string name="login_xmpp_err">Error occured while login in. Please check your credentials
+    and try again</string>
+    <string name="no_internet_conn">There is no internet connection or it is unstable. Please check
+        your internet connection</string>
 </resources>
