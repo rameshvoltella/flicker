@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 
 import com.ua.max.oliynick.flicker.interfaces.ISettings;
 
+import org.jivesoftware.smack.ReconnectionManager;
+
 /**
  * Created by Максим on 21.01.2016.
  */
@@ -23,6 +25,8 @@ public class Settings implements ISettings {
     private static final String SEND_PRESENCE_KEY = "sendPresence";
     private static final String SAVE_CREDENTIALS_KEY = "saveCredentials";
     private static final String DEFAULT_SETTINGS_KEY = "defaultSettings";
+    private static final String RECONNECTION_DELAY_KEY = "reconnectionDelay";
+    private static final String RECONNECTION_POLICY_KEY = "reconnectionPolicy";
     private static final String PASS_KEYSTORE = "password";
 
     private static final String DEFAULT_KEYSTORE = "flicker_keystore";
@@ -105,7 +109,7 @@ public class Settings implements ISettings {
 
     @Override
     public String getHost() {
-        return preferences.getString(HOST_KEY, "192.168.1.7");
+        return preferences.getString(HOST_KEY, "192.168.1.2");
     }
 
     @Override
@@ -141,6 +145,35 @@ public class Settings implements ISettings {
     public void setSendPresence(boolean sendPresence) {
         editor.putBoolean(SEND_PRESENCE_KEY, sendPresence);
         editor.commit();
+    }
+
+    @Override
+    public void setReconnectionInterval(int interval) {
+        editor.putInt(RECONNECTION_DELAY_KEY, interval < 1 ? 12 : interval);
+        editor.commit();
+    }
+
+    @Override
+    public int getReconnectionInterval() {
+        return preferences.getInt(RECONNECTION_DELAY_KEY, 12);
+    }
+
+    @Override
+    public void setReconnectionPolicy(ReconnectionManager.ReconnectionPolicy policy) {
+        editor.putString(RECONNECTION_POLICY_KEY, policy.toString());
+        editor.commit();
+    }
+
+    @Override
+    public ReconnectionManager.ReconnectionPolicy getReconnetionPolicy() {
+
+        String savedPolicy = preferences.getString(RECONNECTION_POLICY_KEY, null);
+        ReconnectionManager.ReconnectionPolicy policy =
+                savedPolicy == null ?
+                ReconnectionManager.ReconnectionPolicy.FIXED_DELAY :
+                        ReconnectionManager.ReconnectionPolicy.valueOf(savedPolicy);
+
+        return policy;
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.ua.max.oliynick.flicker.roboguice;
 
+import android.app.Application;
+
 import com.google.inject.AbstractModule;
 import com.ua.max.oliynick.flicker.interfaces.ILoginModel;
 import com.ua.max.oliynick.flicker.model.LoginModel;
@@ -9,10 +11,15 @@ import com.ua.max.oliynick.flicker.model.LoginModel;
  */
 public class Bindings extends AbstractModule {
 
-    public Bindings() {}
+    private Application application;
+
+    public Bindings(final Application application) {
+        this.application = application;
+    }
 
     @Override
     protected void configure() {
-        bind(ILoginModel.class).to(LoginModel.class);
+        //bind(ILoginModel.class).to(LoginModel.class);
+        bind(ILoginModel.class).toInstance(new LoginModel(application.getApplicationContext()));
     }
 }

@@ -1,11 +1,16 @@
 package com.ua.max.oliynick.flicker.model;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.ua.max.oliynick.flicker.error.LoginException;
+import com.ua.max.oliynick.flicker.interfaces.IInitializible;
 import com.ua.max.oliynick.flicker.interfaces.ILoginModel;
 import com.ua.max.oliynick.flicker.interfaces.ISettings;
 import com.ua.max.oliynick.flicker.util.AppConstant;
+import com.ua.max.oliynick.flicker.util.AppInitializer;
+import com.ua.max.oliynick.flicker.util.ConnectionManager;
+import com.ua.max.oliynick.flicker.util.GenericObserver;
 import com.ua.max.oliynick.flicker.util.Settings;
 import com.ua.max.oliynick.flicker.util.ValidationResult;
 import com.ua.max.oliynick.flicker.util.XMPPTCPConnectionHolder;
@@ -16,7 +21,6 @@ import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 
 import java.io.IOException;
 import java.util.Observable;
-import java.util.Observer;
 
 import oliynick.max.ua.com.flicker.R;
 import roboguice.inject.ContextSingleton;
@@ -59,19 +63,9 @@ public class LoginModel implements ILoginModel {
     @InjectResource(R.string.login_xmpp_err)
     private String xmppErr;
 
-    private Observer sucLoginObs;
-
-    public LoginModel() {
-
-        sucLoginObs = new Observer() {
-            @Override
-            public void update(Observable observable, Object data) {
-                Boolean newValue = (Boolean) data;
-                Log.d("obs", "new value is " + newValue.booleanValue());
-            }
-        };
-
-       // XMPPTCPConnectionHolder.getInstance().getLoginObservable().addObserver(sucLoginObs);
+    public LoginModel(Context context) {
+        IInitializible initializer = new AppInitializer();
+        initializer.initialize(context);
     }
 
     @Override
@@ -115,6 +109,15 @@ public class LoginModel implements ILoginModel {
                 connection.connect();
             }
 
+            final GenericObserver<Boolean> listener = new GenericObserver<Boolean>(false) {
+
+                @Override
+                public void onValueChanged(Observable observable, Boolean oldValue, Boolean newValue) {
+
+                }
+            };
+
+            ConnectionManager.getInstance().addAuthPropertyListener(listener);
             connection.login(login, password);
 
             if(settings.isSaveAuthData()) {
@@ -173,9 +176,6 @@ public class LoginModel implements ILoginModel {
 
         if(length > AppConstant.MAX_EMAIL_LEN)
             return new ValidationResult(false, longEmail);
-
-       /* if(!EmailUtils.isValidEmail(login))
-            return  new ValidationResult(false, invalidEmail);*/
 
         return new ValidationResult();
     }

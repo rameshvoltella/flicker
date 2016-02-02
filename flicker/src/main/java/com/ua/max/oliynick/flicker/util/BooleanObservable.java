@@ -1,25 +1,24 @@
 package com.ua.max.oliynick.flicker.util;
 
-import java.util.Observable;
-
 /**
  * Created by Максим on 29.01.2016.
  */
-public class BooleanObservable extends Observable {
+public class BooleanObservable extends GenericObservable<Boolean> {
 
     private boolean value;
 
     public BooleanObservable(boolean value) {
         this.value = value;
     }
-    public void setValue(boolean value)
-    {
+
+    @Override
+    public synchronized void setValue(Boolean value) {
+        super.setValue(value);
         this.value = value;
-        setChanged();
-        notifyObservers();
     }
-    public boolean getValue()
-    {
+
+    @Override
+    public Boolean getValue() {
         return value;
     }
 

@@ -1,5 +1,7 @@
 package com.ua.max.oliynick.flicker.interfaces;
 
+import org.jivesoftware.smack.ReconnectionManager;
+
 /**
  * Created by Максим on 21.01.2016.
  */
@@ -33,6 +35,14 @@ public interface ISettings {
 
     public void setSendPresence(final boolean sendPresence);
 
+    public void setReconnectionInterval(int interval);
+
+    public int getReconnectionInterval();
+
+    public void setReconnectionPolicy(ReconnectionManager.ReconnectionPolicy policy);
+
+    public ReconnectionManager.ReconnectionPolicy getReconnetionPolicy();
+
     public void setSaveAuthData(final boolean save);
 
     public boolean isSaveAuthData();
@@ -42,4 +52,5 @@ public interface ISettings {
     public String getSavedPassword();
 
     public String getSavedLogin();
+
 }

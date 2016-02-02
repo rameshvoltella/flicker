@@ -18,4 +18,6 @@
     and try again</string>
     <string name="no_internet_conn">There is no internet connection or it is unstable. Please check
         your internet connection</string>
+    <string name="lost_conn">Connection to the server was lost</string>
+    <string name="rec_err">Reconnection to the server failed</string>
 </resources>

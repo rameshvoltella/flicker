@@ -27,7 +27,6 @@ public class XMPPTCPConnectionHolder extends XMPPTCPConnection {
     public static synchronized void initInstance(final ISettings settings) throws IOException, XMPPException, SmackException {
         if(instance == null) {
             instance = new XMPPTCPConnectionHolder(buildConfig(settings));
-            instance.connect();
         }
     }
 

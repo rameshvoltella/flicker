@@ -7,4 +7,6 @@
     <string name="login_prompt">please, enter your email</string>
     <string name="password_prompt">please, enter your password</string>
     <string name="login_button">Sign in</string>
+    <string name="succ_rec">Successful reconnection to the server</string>
+    <string name="unsucc_rec">T</string>
 </resources>

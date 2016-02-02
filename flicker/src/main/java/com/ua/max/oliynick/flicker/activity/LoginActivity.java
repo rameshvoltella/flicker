@@ -1,14 +1,11 @@
 package com.ua.max.oliynick.flicker.activity;
 
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -19,14 +16,9 @@ import com.google.inject.Inject;
 import com.ua.max.oliynick.flicker.error.LoginException;
 import com.ua.max.oliynick.flicker.interfaces.ILoginController;
 import com.ua.max.oliynick.flicker.interfaces.ILoginModel;
+import com.ua.max.oliynick.flicker.util.ConnectionManager;
 import com.ua.max.oliynick.flicker.util.Settings;
 import com.ua.max.oliynick.flicker.util.ValidationResult;
-import com.ua.max.oliynick.flicker.util.XMPPTCPConnectionHolder;
-
-import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.XMPPException;
-
-import java.io.IOException;
 
 import oliynick.max.ua.com.flicker.R;
 import roboguice.activity.RoboActivity;
@@ -52,74 +44,31 @@ public class LoginActivity extends RoboActivity implements ILoginController {
     @InjectResource(R.string.auth_bar_mess)
     private String authProgrText;
 
-    private final ProgressDialog authDialog = new ProgressDialog(this);
-
-    // TODO move
-    private final BroadcastReceiver receiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            boolean isConnected = !intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, false);
-
-            if(!XMPPTCPConnectionHolder.isInit()) {
-                if(isConnected) {
-                    //remove toast
-                    Toast.makeText(context, "Trying to connect", Toast.LENGTH_LONG).show();
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            try {
-                                XMPPTCPConnectionHolder.initInstance(Settings.getInstance());
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            } catch (XMPPException e) {
-                                e.printStackTrace();
-                            } catch (SmackException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }).run();
-                } else {
-                    Toast.makeText(context, "There is no internet connection", Toast.LENGTH_LONG).show();
-                }
-            }
-
-        }
-    };
+    private ProgressDialog authDialog;
 
     public LoginActivity() {}
 
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(receiver);
+        unregisterReceiver(ConnectionManager.getInstance());
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(receiver, filter);
+        registerReceiver(ConnectionManager.getInstance(), filter);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // FIXME!
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-
+        authDialog = new ProgressDialog(this);
         authDialog.setIndeterminate(true);
         authDialog.setCancelable(false);
         authDialog.setMessage(authProgrText);
-
-        //Initializing settings with app context
-        Settings.initInstance(getApplicationContext());
-        //Initializing facebook sdk with app context
-       // FacebookSdk.sdkInitialize(this);
-        //Initializing xmpp connection to server
 
         if(model.getSavedLogin() != null
                 && model.getSavedPassword() != null) {
@@ -133,6 +82,7 @@ public class LoginActivity extends RoboActivity implements ILoginController {
 
         Log.d("credentials", Settings.getInstance().getSavedLogin());
         Log.d("credentials", Settings.getInstance().getSavedPassword());
+
 
     }
 
@@ -176,7 +126,9 @@ public class LoginActivity extends RoboActivity implements ILoginController {
                 if(errMessage != null) {
                     Toast.makeText(LoginActivity.this, errMessage, Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(LoginActivity.this, "OK", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(LoginActivity.this, "OK", Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(intent);
                 }
             }
 
