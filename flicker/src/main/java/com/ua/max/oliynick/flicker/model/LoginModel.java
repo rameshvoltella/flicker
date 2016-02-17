@@ -71,6 +71,11 @@ public class LoginModel implements ILoginModel {
     @Override
     public void login(String login, String password, LoginService service) throws LoginException {
 
+        if(!ConnectionManager.getInstance().isConnected() ||
+                !XMPPTCPConnectionHolder.isInit()) {
+            throw new LoginException("not connected");
+        }
+
         //User's input validation
         final ValidationResult emailValidator = validateEmail(login);
         final ValidationResult passValidator = validatePassword(password);

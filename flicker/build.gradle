@@ -43,7 +43,8 @@ buildscript {
 dependencies {
     //compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.1.1'
+    compile 'com.android.support:design:22.2.0'
+    compile 'com.android.support:appcompat-v7:22.2.0'
     compile 'org.igniterealtime.smack:smack-android:4.1.0'
     compile 'org.igniterealtime.smack:smack-tcp:4.1.0'
     compile 'com.facebook.android:facebook-android-sdk:4.7.0'

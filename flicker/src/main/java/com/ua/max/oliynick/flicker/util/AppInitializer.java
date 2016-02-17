@@ -18,6 +18,10 @@ public class AppInitializer implements IInitializible {
 
     public AppInitializer() {}
 
+    public boolean isInitialized() {
+        return isInitialized;
+    }
+
     @Override
     public void initialize(Context context) {
 

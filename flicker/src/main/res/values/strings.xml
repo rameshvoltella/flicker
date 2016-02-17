@@ -4,9 +4,10 @@
     <string name="auth_bar_mess">Authentification...</string>
     <string name="facebook_app_id">1918426191716363</string>
     <string name="another_name">Another Activity</string>
-    <string name="login_prompt">please, enter your email</string>
-    <string name="password_prompt">please, enter your password</string>
+    <string name="login_prompt">Email</string>
+    <string name="password_prompt">Password</string>
     <string name="login_button">Sign in</string>
+    <string name="create_acc">No account? Create one</string>
     <string name="succ_rec">Successful reconnection to the server</string>
     <string name="unsucc_rec">T</string>
 </resources>

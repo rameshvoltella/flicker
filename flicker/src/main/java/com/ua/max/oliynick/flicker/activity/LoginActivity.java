@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.inject.Inject;
@@ -21,22 +20,22 @@ import com.ua.max.oliynick.flicker.util.Settings;
 import com.ua.max.oliynick.flicker.util.ValidationResult;
 
 import oliynick.max.ua.com.flicker.R;
-import roboguice.activity.RoboActivity;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
+import roboguice.util.RoboContext;
 
 @ContentView(R.layout.login)
-public class LoginActivity extends RoboActivity implements ILoginController {
+public class LoginActivity extends BaseActivity implements ILoginController, RoboContext {
 
     @Inject
     private ILoginModel model;
 
     @InjectView(R.id.loginField)
-    private EditText loginField;
+    private android.support.v7.widget.AppCompatEditText loginField;
 
     @InjectView(R.id.passwordField)
-    private EditText passwordField;
+    private android.support.v7.widget.AppCompatEditText passwordField;
 
     @InjectView(R.id.sign_in)
     private Button loginButton;
@@ -46,7 +45,8 @@ public class LoginActivity extends RoboActivity implements ILoginController {
 
     private ProgressDialog authDialog;
 
-    public LoginActivity() {}
+    public LoginActivity() {
+    }
 
     @Override
     protected void onPause() {
@@ -68,21 +68,20 @@ public class LoginActivity extends RoboActivity implements ILoginController {
         authDialog = new ProgressDialog(this);
         authDialog.setIndeterminate(true);
         authDialog.setCancelable(false);
-        authDialog.setMessage(authProgrText);
+        authDialog.setMessage("loading");
 
-        if(model.getSavedLogin() != null
+        if (model.getSavedLogin() != null
                 && model.getSavedPassword() != null) {
 
             loginField.setText(model.getSavedLogin());
             passwordField.setText(model.getSavedPassword());
         } else {
             //TODO remove else clause
-            Settings.getInstance().setCredentials("maxxx","qwerty");
+            Settings.getInstance().setCredentials("maxxx", "qwerty");
         }
 
         Log.d("credentials", Settings.getInstance().getSavedLogin());
         Log.d("credentials", Settings.getInstance().getSavedPassword());
-
 
     }
 
@@ -95,15 +94,17 @@ public class LoginActivity extends RoboActivity implements ILoginController {
         final ValidationResult passValid = model.validatePassword(password);
         String errMess = null;
 
-        if(!loginValid.isValid()) {
+        ConnectionManager.getInstance().isConnected();
+
+        if (!loginValid.isValid()) {
             errMess = loginValid.getMessage();
             loginField.requestFocus();
-        } else if(!passValid.isValid()) {
+        } else if (!passValid.isValid()) {
             errMess = passValid.getMessage();
             passwordField.requestFocus();
         }
 
-        if(errMess != null) {
+        if (errMess != null) {
             Toast.makeText(LoginActivity.this, errMess, Toast.LENGTH_LONG).show();
             return;
         }
@@ -123,10 +124,9 @@ public class LoginActivity extends RoboActivity implements ILoginController {
                 loginButton.setEnabled(true);
                 authDialog.dismiss();
 
-                if(errMessage != null) {
+                if (errMessage != null) {
                     Toast.makeText(LoginActivity.this, errMessage, Toast.LENGTH_LONG).show();
                 } else {
-                    //Toast.makeText(LoginActivity.this, "OK", Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
                 }
@@ -148,5 +148,4 @@ public class LoginActivity extends RoboActivity implements ILoginController {
 
         loginTask.execute(login, password);
     }
-
 }

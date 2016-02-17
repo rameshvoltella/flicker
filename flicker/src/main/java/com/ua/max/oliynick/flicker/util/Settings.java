@@ -109,7 +109,7 @@ public class Settings implements ISettings {
 
     @Override
     public String getHost() {
-        return preferences.getString(HOST_KEY, "192.168.1.2");
+        return preferences.getString(HOST_KEY, "192.168.1.4");
     }
 
     @Override
