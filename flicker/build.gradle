@@ -50,4 +50,5 @@ dependencies {
     compile 'com.facebook.android:facebook-android-sdk:4.7.0'
     compile 'org.roboguice:roboguice:3.0.+'
     provided 'org.roboguice:roboblender:3.0.1'
+    compile 'com.theartofdev.edmodo:android-image-cropper:1.2.+'
 }

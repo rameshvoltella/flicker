@@ -10,7 +10,6 @@ import com.ua.max.oliynick.flicker.interfaces.ISettings;
 import com.ua.max.oliynick.flicker.util.AppConstant;
 import com.ua.max.oliynick.flicker.util.AppInitializer;
 import com.ua.max.oliynick.flicker.util.ConnectionManager;
-import com.ua.max.oliynick.flicker.util.GenericObserver;
 import com.ua.max.oliynick.flicker.util.Settings;
 import com.ua.max.oliynick.flicker.util.ValidationResult;
 import com.ua.max.oliynick.flicker.util.XMPPTCPConnectionHolder;
@@ -20,7 +19,6 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 
 import java.io.IOException;
-import java.util.Observable;
 
 import oliynick.max.ua.com.flicker.R;
 import roboguice.inject.ContextSingleton;
@@ -114,15 +112,6 @@ public class LoginModel implements ILoginModel {
                 connection.connect();
             }
 
-            final GenericObserver<Boolean> listener = new GenericObserver<Boolean>(false) {
-
-                @Override
-                public void onValueChanged(Observable observable, Boolean oldValue, Boolean newValue) {
-
-                }
-            };
-
-            ConnectionManager.getInstance().addAuthPropertyListener(listener);
             connection.login(login, password);
 
             if(settings.isSaveAuthData()) {

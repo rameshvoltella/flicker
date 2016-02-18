@@ -9,4 +9,9 @@
     <dimen name="flicker_medium_text">9pt</dimen>
     <dimen name="flicker_large_text">14pt</dimen>
     <dimen name="flicker_contacts_margin">5dp</dimen>
+
+    <dimen name="contacts_ic_left_pad">16dp</dimen>
+    <dimen name="contacts_txt_left_pad">40dp</dimen>
+    <dimen name="contacts_btn_pad">16dp</dimen>
+
 </resources>

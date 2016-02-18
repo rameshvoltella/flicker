@@ -26,8 +26,8 @@ public class TwoFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the fragment_one for this fragment
-        return inflater.inflate(R.layout.fragment_one, container, false);
+        // Inflate the contacts for this fragment
+        return inflater.inflate(R.layout.contacts, container, false);
     }
 
 }
