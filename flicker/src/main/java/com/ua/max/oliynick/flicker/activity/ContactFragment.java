@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.inject.Inject;
@@ -86,7 +86,7 @@ public class ContactFragment extends RoboFragment implements IContactItemControl
             final LayoutInflater inflater = (LayoutInflater) context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-            final LinearLayout view = (LinearLayout)
+            final RelativeLayout view = (RelativeLayout)
                     inflater.inflate(R.layout.contact_item, null);
 
             final TextView nick = (TextView) view.findViewById(R.id.nickname);
@@ -118,6 +118,7 @@ public class ContactFragment extends RoboFragment implements IContactItemControl
     }
 
     public ContactFragment() {
+        super();
     }
 
     @Override
@@ -130,7 +131,7 @@ public class ContactFragment extends RoboFragment implements IContactItemControl
                              Bundle savedInstanceState) {
 
         model.initialize(null);
-        model.setController(this);
+        model.setController(this);//FIXME REDO!!
 
         adapter = new ContactsAdapter(getActivity(), model.getContacts());
 

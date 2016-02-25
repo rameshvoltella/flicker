@@ -35,7 +35,6 @@
         <item name="android:textColor">@color/defaultText</item>
         <item name="android:textColorSecondary">@color/primaryDark</item>
         <item name="android:textColorHint">@color/primaryDark</item>
-        <item name="android:textSize">@dimen/flicker_medium_text</item>
         <item name="android:fontFamily">sans-serif-thin</item>
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">wrap_content</item>

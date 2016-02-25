@@ -21,4 +21,18 @@ public class PresenceUtils {
         return "Online";
     }
 
+    /**
+     * Returns current status of given presence type in terms
+     * of message 'online' or 'offline'
+     * @throws IllegalArgumentException if presences is null
+     * */
+    public static String statusFromPresenceType(final Presence.Type type) {
+
+        if(type == null)
+            throw new IllegalArgumentException("type == null");
+
+        if(type == Presence.Type.unavailable) return "Offline";
+        return "Online";
+    }
+
 }

@@ -1,4 +1,4 @@
-package com.ua.max.oliynick.flicker.util;
+package com.ua.max.oliynick.flicker.singleton;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -10,32 +10,27 @@ import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
 
-import org.jivesoftware.smack.ConnectionListener;
+import com.ua.max.oliynick.flicker.util.ChatCreationListener;
+import com.ua.max.oliynick.flicker.util.GenericObservable;
+import com.ua.max.oliynick.flicker.util.GenericObserver;
+
 import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.chat.ChatManager;
 
 import oliynick.max.ua.com.flicker.R;
 
 /**
  * Created by Максим on 01.02.2016.
  */
-public class ConnectionManager extends BroadcastReceiver implements ConnectionListener {
+public class ConnectionListener extends BroadcastReceiver implements org.jivesoftware.smack.ConnectionListener {
 
-    private final BooleanObservable connectedProp = new BooleanObservable(false);
-    private final BooleanObservable authentificatedProp = new BooleanObservable(false);
+    private final GenericObservable<Boolean> connectedProp = new GenericObservable<>(false);
+    private final GenericObservable<Boolean> authentificatedProp = new GenericObservable<>(false);
 
-    private static Context context = null;
-    private static ConnectionManager instance = null;
+    private final Context context;
 
-    private ConnectionManager(){}
-
-    public static void initInstance(Context context) {
-        ConnectionManager.context = context;
-    }
-
-    public static synchronized ConnectionManager getInstance() {
-        if(instance == null) instance = new ConnectionManager();
-
-        return instance;
+    public ConnectionListener(Context context){
+        this.context = context;
     }
 
     public boolean isConnected() {
@@ -43,19 +38,19 @@ public class ConnectionManager extends BroadcastReceiver implements ConnectionLi
     }
 
     public void addConnectedPropertyListener(GenericObserver<Boolean> observer) {
-        connectedProp.addObserver(observer.getObserver());
+        connectedProp.addObserver(observer);
     }
 
     public void removeConnectedPropertyListener(GenericObserver<Boolean> observer) {
-        connectedProp.deleteObserver(observer.getObserver());
+        connectedProp.deleteObserver(observer);
     }
 
     public void addAuthPropertyListener(GenericObserver<Boolean> observer) {
-        authentificatedProp.addObserver(observer.getObserver());
+        authentificatedProp.addObserver(observer);
     }
 
     public void removeAuthPropertyListener(GenericObserver<Boolean> observer) {
-        authentificatedProp.deleteObserver(observer.getObserver());
+        authentificatedProp.deleteObserver(observer);
     }
 
     @Override
@@ -82,6 +77,7 @@ public class ConnectionManager extends BroadcastReceiver implements ConnectionLi
         if(connectedProp.getValue() != true) {
             connectedProp.setValue(true);
         }
+
     }
 
     @Override
@@ -92,6 +88,9 @@ public class ConnectionManager extends BroadcastReceiver implements ConnectionLi
         if(!resumed) {
             authentificatedProp.setValue(true);
         }
+
+        final ChatCreationListener listener = ChatCreationListener.getInstance();
+        listener.attach(ChatManager.getInstanceFor(connection));
     }
 
     @Override
@@ -125,13 +124,11 @@ public class ConnectionManager extends BroadcastReceiver implements ConnectionLi
 
         if(connectedProp.getValue()) {
             //Toast.makeText(context, context.getString(R.string.rec_err), Toast.LENGTH_SHORT).show();
-
-
             runToast(context.getString(R.string.rec_err));
         }
     }
 
-    private static void runToast(final String messageText) {
+    private void runToast(final String messageText) {
 
         final Handler handler = new Handler(Looper.getMainLooper()) {
             @Override

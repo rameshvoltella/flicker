@@ -20,12 +20,12 @@ import roboguice.inject.ContentView;
 
 @ContentView(R.layout.main)
 public class MainActivity extends BaseActivity {
-private Toolbar toolbar;
-private TabLayout tabLayout;
-private ViewPager viewPager;
+    private Toolbar toolbar;
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
 
-@Override
-protected void onCreate(Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -38,44 +38,44 @@ protected void onCreate(Bundle savedInstanceState) {
 
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
-        }
+    }
 
-private void setupViewPager(ViewPager viewPager) {
+    private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new ContactFragment(), "ONE");
-        adapter.addFragment(new TwoFragment(), "TWO");
+        adapter.addFragment(new ContactFragment(), "Contacts");
+        adapter.addFragment(new LastChatsFragment(), "Last chats");
         viewPager.setAdapter(adapter);
+    }
+
+    private final class ViewPagerAdapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
+
+        //private final Map <String, Fragment> pages;
+
+        public ViewPagerAdapter(FragmentManager manager) {
+            super(manager);
+            // pages = new HashMap<>();
         }
 
-private final class ViewPagerAdapter extends FragmentPagerAdapter {
-    private final List<Fragment> mFragmentList = new ArrayList<>();
-    private final List<String> mFragmentTitleList = new ArrayList<>();
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
 
-    //private final Map <String, Fragment> pages;
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
 
-    public ViewPagerAdapter(FragmentManager manager) {
-        super(manager);
-       // pages = new HashMap<>();
+        public void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
+        }
     }
-
-    @Override
-    public Fragment getItem(int position) {
-        return mFragmentList.get(position);
-    }
-
-    @Override
-    public int getCount() {
-        return mFragmentList.size();
-    }
-
-    public void addFragment(Fragment fragment, String title) {
-        mFragmentList.add(fragment);
-        mFragmentTitleList.add(title);
-    }
-
-    @Override
-    public CharSequence getPageTitle(int position) {
-        return mFragmentTitleList.get(position);
-    }
-}
 }

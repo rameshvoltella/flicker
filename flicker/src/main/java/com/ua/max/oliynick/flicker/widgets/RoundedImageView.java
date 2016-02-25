@@ -1,4 +1,4 @@
-package com.ua.max.oliynick.flicker.util;
+package com.ua.max.oliynick.flicker.widgets;
 
 import android.content.Context;
 import android.graphics.Bitmap;

@@ -1,43 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_vertical"
+    android:paddingBottom="@dimen/contacts_pad"
+    android:paddingTop="@dimen/contacts_pad"
     android:orientation="horizontal"
-    android:layout_marginBottom="@dimen/contacts_spacing"
-    android:layout_marginTop="@dimen/contacts_spacing"
     >
 
     <com.ua.max.oliynick.flicker.widgets.RoundedImageView
         android:id="@+id/avatar"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:paddingStart="@dimen/contacts_ic_left_pad"
-        android:paddingEnd="0dp"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="@dimen/contacts_ic_left_pad"
+        android:layout_marginEnd="0dp"
         android:src="@drawable/logo_material" />
+
+    <!--<com.ua.max.oliynick.flicker.widgets.TypefacedTextView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:font="http://schemas.android.com/apk/res/com.ua.max.oliynick.flicker"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Custom fonts in XML are easy"
+        android:textColor="#000FFF"
+        font:typeface="Roboto-Black.ttf" />-->
 
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingLeft="@dimen/contacts_txt_left_pad"
-        android:paddingEnd="0dp"
+        android:layout_centerVertical="true"
+        android:paddingStart="@dimen/contacts_txt_left_pad"
+        android:layout_toEndOf="@+id/avatar"
+        android:paddingEnd="3dp"
         >
 
         <TextView
             android:id="@+id/nickname"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Root"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
             android:id="@+id/presence"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Online"
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </LinearLayout>
 
@@ -47,17 +58,21 @@
         style="@style/iconButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:src="@drawable/ic_chat_bubble_outline_black_36dp" />
+        android:layout_toStartOf="@+id/msgBtn"
+        android:paddingEnd="@dimen/contacts_btn_pad"
+        android:layout_centerVertical="true"
+        android:paddingStart="@dimen/contacts_btn_pad"
+        android:src="@drawable/ic_chat_bubble_black_24dp" />
 
     <ImageButton
         android:id="@+id/msgBtn"
         style="@style/iconButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingStart="@dimen/contacts_btn_pad"
         android:paddingEnd="@dimen/contacts_btn_pad"
-        android:src="@drawable/ic_chat_bubble_outline_black_36dp" />
+        android:paddingStart="@dimen/contacts_btn_pad"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/ic_chat_bubble_black_24dp" />
 
-</LinearLayout>
+</RelativeLayout>

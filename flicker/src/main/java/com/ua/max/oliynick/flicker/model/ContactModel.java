@@ -4,9 +4,9 @@ import android.content.Context;
 import android.util.Log;
 
 import com.ua.max.oliynick.flicker.interfaces.IContactsModel;
+import com.ua.max.oliynick.flicker.singleton.MainApp;
 import com.ua.max.oliynick.flicker.util.ContactItemModel;
 import com.ua.max.oliynick.flicker.util.StringUtils;
-import com.ua.max.oliynick.flicker.util.XMPPTCPConnectionHolder;
 
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.roster.Roster;
@@ -47,16 +47,6 @@ public class ContactModel extends IContactsModel implements RosterListener {
     }
 
     @Override
-    public void showInfo() {
-
-    }
-
-    @Override
-    public void showConversation() {
-
-    }
-
-    @Override
     protected void onContactListUpdate(ContactItemModel item) {
         getController().onUpdate(item);
     }
@@ -83,8 +73,7 @@ public class ContactModel extends IContactsModel implements RosterListener {
         final Presence highPriorPres = roster.getPresence(presence.getFrom());
         ContactItemModel item = contacts.get(key);
 
-        RosterEntry entry = null;
-
+        RosterEntry entry;
 
         if(item != null) {
             item.setPresence(highPriorPres);
@@ -98,11 +87,8 @@ public class ContactModel extends IContactsModel implements RosterListener {
 
     private void init() {
 
-        if(XMPPTCPConnectionHolder.getInstance() == null)
-            throw new RuntimeException("Xmpp connection is null");
-
         Roster.setDefaultSubscriptionMode(Roster.SubscriptionMode.manual);
-        roster = Roster.getInstanceFor(XMPPTCPConnectionHolder.getInstance());
+        roster = Roster.getInstanceFor(MainApp.getConnection());
         roster.setSubscriptionMode(Roster.SubscriptionMode.manual);
 
         contacts = new HashMap<>(roster.getEntryCount() + 1);

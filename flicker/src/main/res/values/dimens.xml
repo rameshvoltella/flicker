@@ -1,17 +1,14 @@
 <resources>
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="logo_margin">15dp</dimen>
-    <dimen name="activity_login_margin">15dp</dimen>
-    <dimen name="activity_login_side_margin">14dp</dimen>
-    <dimen name="flicker_small_text">6pt</dimen>
-    <dimen name="flicker_medium_text">9pt</dimen>
-    <dimen name="flicker_large_text">14pt</dimen>
-    <dimen name="flicker_contacts_margin">5dp</dimen>
+    <!-- Example customization of dimensions originally defined in res/values/dimens.xml
+         (such as screen margins) for screens with more than 820dp of available width. This
+         would include 7" and 10" devices in landscape (~960dp and ~1280dp respectively). -->
 
+    <dimen name="activity_horizontal_margin">12dp</dimen>
+
+    <dimen name="contacts_pad">8dp</dimen>
     <dimen name="contacts_ic_left_pad">16dp</dimen>
-    <dimen name="contacts_txt_left_pad">40dp</dimen>
-    <dimen name="contacts_btn_pad">16dp</dimen>
+    <dimen name="contacts_txt_left_pad">15dp</dimen>
+    <dimen name="contacts_btn_pad">8dp</dimen>
+    <dimen name="contacts_spacing">8dp</dimen>
 
 </resources>

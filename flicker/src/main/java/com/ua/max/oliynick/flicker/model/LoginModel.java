@@ -1,18 +1,13 @@
 package com.ua.max.oliynick.flicker.model;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.ua.max.oliynick.flicker.error.LoginException;
-import com.ua.max.oliynick.flicker.interfaces.IInitializible;
 import com.ua.max.oliynick.flicker.interfaces.ILoginModel;
 import com.ua.max.oliynick.flicker.interfaces.ISettings;
+import com.ua.max.oliynick.flicker.singleton.MainApp;
 import com.ua.max.oliynick.flicker.util.AppConstant;
-import com.ua.max.oliynick.flicker.util.AppInitializer;
-import com.ua.max.oliynick.flicker.util.ConnectionManager;
-import com.ua.max.oliynick.flicker.util.Settings;
 import com.ua.max.oliynick.flicker.util.ValidationResult;
-import com.ua.max.oliynick.flicker.util.XMPPTCPConnectionHolder;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
@@ -61,16 +56,13 @@ public class LoginModel implements ILoginModel {
     @InjectResource(R.string.login_xmpp_err)
     private String xmppErr;
 
-    public LoginModel(Context context) {
-        IInitializible initializer = new AppInitializer();
-        initializer.initialize(context);
-    }
+    public LoginModel() {}
 
     @Override
     public void login(String login, String password, LoginService service) throws LoginException {
 
-        if(!ConnectionManager.getInstance().isConnected() ||
-                !XMPPTCPConnectionHolder.isInit()) {
+        if(!MainApp.getConnectionListener().isConnected() ||
+                !MainApp.getConnection().isConnected()) {
             throw new LoginException("not connected");
         }
 
@@ -84,11 +76,11 @@ public class LoginModel implements ILoginModel {
         * */
         if(!emailValidator.isValid() || !passValidator.isValid()) {
 
-            final boolean isNullEmaiMsg = emailValidator.getMessage() == null;
+            final boolean isNullEmailMsg = emailValidator.getMessage() == null;
             final boolean isNullPassMsg = passValidator.getMessage() == null;
             final StringBuilder msg = new StringBuilder();
 
-            if(isNullEmaiMsg && isNullPassMsg) {
+            if(isNullEmailMsg && isNullPassMsg) {
                 msg.append(invalidInput);
             } else {
                 if (emailValidator.getMessage() != null) {
@@ -102,11 +94,11 @@ public class LoginModel implements ILoginModel {
             throw new LoginException(msg.toString());
         }
 
-        XMPPTCPConnection connection = XMPPTCPConnectionHolder.getInstance();
+        XMPPTCPConnection connection = MainApp.getConnection();
 
         try {
 
-            ISettings settings = Settings.getInstance();
+            ISettings settings = MainApp.getSettings();
 
             if(!connection.isConnected()) {
                 connection.connect();
@@ -119,6 +111,9 @@ public class LoginModel implements ILoginModel {
             } else {
                 settings.setSaveAuthData(false);
             }
+
+            // reloads settings for current user
+            settings.loadFor(login.toLowerCase());
 
         } catch (XMPPException e) {
             e.printStackTrace();
@@ -144,17 +139,17 @@ public class LoginModel implements ILoginModel {
 
     @Override
     public boolean isSavedAuthData() {
-        return Settings.getInstance().isSaveAuthData();
+        return MainApp.getSettings().isSaveAuthData();
     }
 
     @Override
     public String getSavedLogin() {
-        return Settings.getInstance().getSavedLogin();
+        return MainApp.getSettings().getSavedLogin();
     }
 
     @Override
     public String getSavedPassword() {
-        return Settings.getInstance().getSavedPassword();
+        return MainApp.getSettings().getSavedPassword();
     }
 
     @Override

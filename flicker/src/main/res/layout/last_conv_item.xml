@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical"
+    android:paddingBottom="@dimen/contacts_pad"
+    android:paddingTop="@dimen/contacts_pad"
+    android:orientation="horizontal"
+    >
+
+    <com.ua.max.oliynick.flicker.widgets.RoundedImageView
+        android:id="@+id/last_conv_avatar"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="@dimen/contacts_ic_left_pad"
+        android:layout_marginEnd="0dp"
+        android:src="@drawable/logo_material" />
+
+    <!--<com.ua.max.oliynick.flicker.widgets.TypefacedTextView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:font="http://schemas.android.com/apk/res/com.ua.max.oliynick.flicker"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Custom fonts in XML are easy"
+        android:textColor="#000FFF"
+        font:typeface="Roboto-Black.ttf" />-->
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerVertical="true"
+        android:paddingStart="@dimen/contacts_txt_left_pad"
+        android:layout_toEndOf="@+id/last_conv_avatar"
+        android:paddingEnd="3dp"
+        android:id="@+id/linearLayout">
+
+        <TextView
+            android:id="@+id/last_conv_nickname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/last_conv_presence"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Message"
+        android:layout_centerVertical="true"
+        android:id="@+id/last_conv_msg"
+        android:layout_toEndOf="@+id/linearLayout" />
+
+    <ImageButton
+        android:id="@+id/last_conv_msgBtn"
+        style="@style/iconButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingEnd="@dimen/contacts_btn_pad"
+        android:paddingStart="@dimen/contacts_btn_pad"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/ic_chat_bubble_black_24dp" />
+
+</RelativeLayout>

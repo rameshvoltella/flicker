@@ -1,4 +1,4 @@
-package com.ua.max.oliynick.flicker.util;
+package com.ua.max.oliynick.flicker.singleton;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -37,13 +37,13 @@ public class Settings implements ISettings {
     private Context context;
     //private ISecuredDataProvider provider;
 
-    private static ISettings instance = null;
+    //private static ISettings instance = null;
 
-    private Settings(final Context context) {
+    public Settings(final Context context) {
         this(context, null);
     }
 
-    private Settings(final Context context, final String userLogin) {
+    public Settings(final Context context, final String userLogin) {
 
         if(context == null)
             throw  new IllegalArgumentException("context == null");
@@ -56,17 +56,17 @@ public class Settings implements ISettings {
         return userLogin;
     }
 
-    public static synchronized  void initInstance(final Context context) {
+    /*public static synchronized  void initInstance(final Context context) {
         initInstance(context, null);
-    }
+    }*/
 
-    public static synchronized void initInstance(final Context context, final String userLogin) {
-        if(instance == null) instance = new Settings(context, userLogin);
-    }
+    //public static synchronized void initInstance(final Context context, final String userLogin) {
+    //    if(instance == null) instance = new Settings(context, userLogin);
+    //}
 
-    public static ISettings getInstance() {
+    /*public static ISettings getInstance() {
         return instance;
-    }
+    }*/
 
     @Override
     public void loadDefault() {

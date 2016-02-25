@@ -29,10 +29,6 @@ public abstract class IContactsModel implements IInitializible {
 
     public abstract Collection<ContactItemModel> getContacts(final String query);
 
-    public abstract void showInfo();
-
-    public abstract void showConversation();
-
     protected abstract void onContactListUpdate(ContactItemModel item);
 
 }

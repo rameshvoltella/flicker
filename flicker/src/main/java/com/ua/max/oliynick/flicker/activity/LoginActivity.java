@@ -15,8 +15,7 @@ import com.google.inject.Inject;
 import com.ua.max.oliynick.flicker.error.LoginException;
 import com.ua.max.oliynick.flicker.interfaces.ILoginController;
 import com.ua.max.oliynick.flicker.interfaces.ILoginModel;
-import com.ua.max.oliynick.flicker.util.ConnectionManager;
-import com.ua.max.oliynick.flicker.util.Settings;
+import com.ua.max.oliynick.flicker.singleton.MainApp;
 import com.ua.max.oliynick.flicker.util.ValidationResult;
 
 import oliynick.max.ua.com.flicker.R;
@@ -51,14 +50,14 @@ public class LoginActivity extends BaseActivity implements ILoginController, Rob
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(ConnectionManager.getInstance());
+        unregisterReceiver(MainApp.getConnectionListener());
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(ConnectionManager.getInstance(), filter);
+        registerReceiver(MainApp.getConnectionListener(), filter);
     }
 
     @Override
@@ -77,11 +76,11 @@ public class LoginActivity extends BaseActivity implements ILoginController, Rob
             passwordField.setText(model.getSavedPassword());
         } else {
             //TODO remove else clause
-            Settings.getInstance().setCredentials("maxxx", "qwerty");
+            MainApp.getSettings().setCredentials("maxxx", "qwerty");
         }
 
-        Log.d("credentials", Settings.getInstance().getSavedLogin());
-        Log.d("credentials", Settings.getInstance().getSavedPassword());
+        Log.d("credentials", MainApp.getSettings().getSavedLogin());
+        Log.d("credentials", MainApp.getSettings().getSavedPassword());
 
     }
 
@@ -93,8 +92,6 @@ public class LoginActivity extends BaseActivity implements ILoginController, Rob
         final ValidationResult loginValid = model.validateEmail(login);
         final ValidationResult passValid = model.validatePassword(password);
         String errMess = null;
-
-        ConnectionManager.getInstance().isConnected();
 
         if (!loginValid.isValid()) {
             errMess = loginValid.getMessage();
