@@ -1,10 +1,18 @@
-package com.ua.max.oliynick.flicker.util;
+package com.ua.max.oliynick.flicker.singleton;
 
 import android.util.Log;
+
+import com.ua.max.oliynick.flicker.util.ChatWrapper;
+import com.ua.max.oliynick.flicker.util.GenericObservable;
+import com.ua.max.oliynick.flicker.util.GenericObserver;
 
 import org.jivesoftware.smack.chat.Chat;
 import org.jivesoftware.smack.chat.ChatManager;
 import org.jivesoftware.smack.chat.ChatManagerListener;
+import org.jxmpp.util.XmppStringUtils;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <p>This class is responsible for
@@ -16,58 +24,26 @@ import org.jivesoftware.smack.chat.ChatManagerListener;
  */
 public final class ChatCreationListener {
 
-    private static ChatCreationListener instance = new ChatCreationListener();
-
-    public static final class ChatWrapper {
-        private boolean createdLocally;
-        private Chat chat;
-
-        public ChatWrapper(boolean createdLocally, Chat chat) {
-            this.createdLocally = createdLocally;
-            this.chat = chat;
-        }
-
-        public boolean isCreatedLocally() {
-            return createdLocally;
-        }
-
-        public void setCreatedLocally(boolean createdLocally) {
-            this.createdLocally = createdLocally;
-        }
-
-        public Chat getChat() {
-            return chat;
-        }
-
-        public void setChat(Chat chat) {
-            this.chat = chat;
-        }
-    }
-
     /**Observable property*/
     private GenericObservable<ChatWrapper> chatCreationProp = null;
     /**Chat creation listener*/
     private ChatManagerListener listener = null;
+    /**Holds all chats*/
+    private Map<String, ChatWrapper> chatMap = null;
 
-    private ChatCreationListener() {
+    ChatCreationListener() {
 
+        chatMap = new HashMap<>();
         chatCreationProp = new GenericObservable<>();
 
         listener = new ChatManagerListener() {
             @Override
             public void chatCreated(Chat chat, boolean createdLocally) {
-                Log.d("smack", "chat created ".concat(chat.toString()));
-                chatCreationProp.setValue(new ChatWrapper(createdLocally, chat));
+                Log.d("SMACK", "chat created ".concat(chat.toString()));
+                doPut(chat, createdLocally);
             }
         };
 
-    }
-
-    /**
-     * Returns instance of {@code ChatCreationListener} class
-     * */
-    public static ChatCreationListener getInstance() {
-        return instance;
     }
 
     /**
@@ -75,7 +51,7 @@ public final class ChatCreationListener {
      * @param chatManager given xmpp chat manager
      * @see ChatManager
      * */
-    public void attach(ChatManager chatManager) {
+    void attach(ChatManager chatManager) {
         chatManager.addChatListener(listener);
     }
 
@@ -84,7 +60,7 @@ public final class ChatCreationListener {
      * @param chatManager given xmpp chat manager
      * @see ChatManager
      * */
-    public void detach(ChatManager chatManager) {
+    void detach(ChatManager chatManager) {
         chatManager.removeChatListener(listener);
     }
 
@@ -92,7 +68,7 @@ public final class ChatCreationListener {
      * <p>Adds observer to chat creation property</p>
      * @param observer observer to add
      * */
-    public void addListener(GenericObserver<ChatWrapper> observer) {
+    public void addChatCreationListener(GenericObserver<ChatWrapper> observer) {
         chatCreationProp.addObserver(observer);
     }
 
@@ -100,8 +76,24 @@ public final class ChatCreationListener {
      * <p>Removes observer from chat creation property</p>
      * @param observer observer to remove
      * */
-    public void removeListener(GenericObserver<ChatWrapper> observer) {
+    public void removeChatCreationListener(GenericObserver<ChatWrapper> observer) {
         chatCreationProp.deleteObserver(observer);
+    }
+
+    /**<p>
+     * Returns previously created chat wrapper for a given jid.
+     * If chat wasn't created, than it'll return null
+     * @param jid jabber user id
+     * </p>*/
+    public ChatWrapper getChat(final String jid) {
+        return chatMap.get(XmppStringUtils.parseBareJid(jid));
+    }
+
+    private void doPut(Chat chat, boolean createdLocally) {
+        final ChatWrapper chatWrapper = new ChatWrapper(createdLocally, chat);
+
+        chatCreationProp.setValue(chatWrapper);
+        chatMap.put(XmppStringUtils.parseBareJid(chat.getParticipant()), chatWrapper);
     }
 
 }

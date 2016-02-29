@@ -1,6 +1,5 @@
 package com.ua.max.oliynick.flicker.util;
 
-import org.jivesoftware.smack.chat.Chat;
 import org.jivesoftware.smack.packet.Presence;
 
 /**
@@ -11,7 +10,6 @@ public class LastChatModel {
     public enum UpdatedProperty {Presence, Nickname, Avatar, Message, None};
 
     private final String id;
-    private Chat chat;
     private String login;
     private String message;
     private Presence.Type presenceType;
@@ -22,14 +20,6 @@ public class LastChatModel {
 
     public String getId() {
         return id;
-    }
-
-    public Chat getChat() {
-        return chat;
-    }
-
-    public void setChat(Chat chat) {
-        this.chat = chat;
     }
 
     public String getMessage() {
@@ -65,7 +55,6 @@ public class LastChatModel {
         LastChatModel that = (LastChatModel) o;
 
         if (!id.equals(that.id)) return false;
-        if (chat != null ? !chat.equals(that.chat) : that.chat != null) return false;
         if (login != null ? !login.equals(that.login) : that.login != null) return false;
         if (message != null ? !message.equals(that.message) : that.message != null) return false;
         return presenceType == that.presenceType;
@@ -74,8 +63,6 @@ public class LastChatModel {
 
     @Override
     public int hashCode() {
-        int result = id.hashCode();
-        result = 33 * result + (chat != null ? chat.hashCode() : 0);
-        return result;
+        return 33 * id.hashCode();
     }
 }

@@ -4,9 +4,9 @@ import com.ua.max.oliynick.flicker.util.GenericObservable;
 import com.ua.max.oliynick.flicker.util.GenericObserver;
 import com.ua.max.oliynick.flicker.util.LastChatModel;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Максим on 20.02.2016.
@@ -16,23 +16,20 @@ public abstract class ILastChatsModel {
     /**
      * <p>Holds all last conversations.</p>
      * */
-    private List<LastChatModel> lastConversations = null;
-
-    private GenericObservable<LastChatModel> chatObservable = null;
+    private Map<String, LastChatModel> lastConversations = null;
 
     private GenericObservable<LastChatModel> chatUpdateObservable = null;
 
     private GenericObservable<LastChatModel> chatDestroyObservable = null;
 
     public ILastChatsModel() {
-        lastConversations = new ArrayList<>();
-        chatObservable = new GenericObservable<>();
+        lastConversations = new HashMap<>();
         chatUpdateObservable = new GenericObservable<>();
         chatDestroyObservable = new GenericObservable<>();
     }
 
     public Collection<LastChatModel> getLastConversations() {
-        return lastConversations;
+        return lastConversations.values();
     }
 
     /**
@@ -43,18 +40,10 @@ public abstract class ILastChatsModel {
      * */
     public void destroyChat(final LastChatModel model) {
 
-        if(lastConversations.remove(model)) {
+        if(lastConversations.remove(model) != null) {
             doDestroyChat(model);
             fireChatDestroyed(model);
         }
-    }
-
-    public void addChatCreationObserver(final GenericObserver<LastChatModel>  observer) {
-        chatObservable.addObserver(observer);
-    }
-
-    public void removeChatCreationObserver(final GenericObserver<LastChatModel> observer) {
-        chatObservable.deleteObserver(observer);
     }
 
     public void addChatUpdateObserver(final GenericObserver<LastChatModel>  observer) {
@@ -73,16 +62,20 @@ public abstract class ILastChatsModel {
         chatDestroyObservable.deleteObserver(observer);
     }
 
-    protected void fireChatCreated(final LastChatModel item) {
-        chatObservable.setValue(item);
-    }
-
     protected void fireChatUpdated(final LastChatModel item) {
         chatUpdateObservable.setValue(item);
     }
 
-    protected boolean doAddLastChatModel(final LastChatModel model) {
-        return lastConversations.add(model);
+    protected boolean containsModel(final String id) {
+        return lastConversations.containsKey(id);
+    }
+
+    protected LastChatModel getModel(final String id) {
+        return lastConversations.get(id);
+    }
+
+    protected void doAddLastChatModel(final LastChatModel model) {
+        lastConversations.put(model.getId(), model);
     }
 
     protected void fireChatDestroyed(final LastChatModel item) {

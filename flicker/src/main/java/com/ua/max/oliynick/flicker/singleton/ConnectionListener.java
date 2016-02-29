@@ -10,19 +10,17 @@ import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.ua.max.oliynick.flicker.util.ChatCreationListener;
 import com.ua.max.oliynick.flicker.util.GenericObservable;
 import com.ua.max.oliynick.flicker.util.GenericObserver;
 
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.chat.ChatManager;
 
 import oliynick.max.ua.com.flicker.R;
 
 /**
  * Created by Максим on 01.02.2016.
  */
-public class ConnectionListener extends BroadcastReceiver implements org.jivesoftware.smack.ConnectionListener {
+public final class ConnectionListener extends BroadcastReceiver implements org.jivesoftware.smack.ConnectionListener {
 
     private final GenericObservable<Boolean> connectedProp = new GenericObservable<>(false);
     private final GenericObservable<Boolean> authentificatedProp = new GenericObservable<>(false);
@@ -88,9 +86,6 @@ public class ConnectionListener extends BroadcastReceiver implements org.jivesof
         if(!resumed) {
             authentificatedProp.setValue(true);
         }
-
-        final ChatCreationListener listener = ChatCreationListener.getInstance();
-        listener.attach(ChatManager.getInstanceFor(connection));
     }
 
     @Override

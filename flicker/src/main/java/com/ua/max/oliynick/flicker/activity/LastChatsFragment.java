@@ -86,6 +86,10 @@ public class LastChatsFragment extends RoboFragment {
                 @Override
                 public void onClick(View v) {
                     // TODO join conversation
+                    /*Intent intent = new Intent(context, ChatActivity.class);
+
+                    ChatActivity.setChat(model.getChat());
+                    startActivity(intent);*/
                 }
             });
 

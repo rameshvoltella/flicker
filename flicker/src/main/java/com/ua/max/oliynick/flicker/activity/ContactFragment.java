@@ -5,6 +5,7 @@ package com.ua.max.oliynick.flicker.activity;
  */
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.internal.widget.ListViewCompat;
 import android.view.LayoutInflater;
@@ -18,8 +19,12 @@ import android.widget.TextView;
 import com.google.inject.Inject;
 import com.ua.max.oliynick.flicker.interfaces.IContactItemController;
 import com.ua.max.oliynick.flicker.interfaces.IContactsModel;
+import com.ua.max.oliynick.flicker.singleton.MainApp;
 import com.ua.max.oliynick.flicker.util.ContactItemModel;
 import com.ua.max.oliynick.flicker.util.PresenceUtils;
+
+import org.jivesoftware.smack.chat.Chat;
+import org.jivesoftware.smack.chat.ChatManager;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -94,6 +99,8 @@ public class ContactFragment extends RoboFragment implements IContactItemControl
             final ImageButton info = (ImageButton) view.findViewById(R.id.infoBtn);
             final ImageButton msg = (ImageButton) view.findViewById(R.id.msgBtn);
 
+            final ContactItemModel entry = contacts.get(position);
+
             info.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -105,10 +112,16 @@ public class ContactFragment extends RoboFragment implements IContactItemControl
                 @Override
                 public void onClick(View v) {
                     // TODO show message fragment
+
+                    ChatManager cm = ChatManager.getInstanceFor(MainApp.getConnection());
+                    Chat ch = cm.createChat(entry.getEntry().getUser());
+
+                    Intent intent = new Intent(context, ChatActivity.class);
+                    ChatActivity.setChat(ch);
+
+                    startActivity(intent);
                 }
             });
-
-            final ContactItemModel entry = contacts.get(position);
 
             nick.setText(entry.getEntry().getName());
             pres.setText(PresenceUtils.statusFromPresence(entry.getPresence()));

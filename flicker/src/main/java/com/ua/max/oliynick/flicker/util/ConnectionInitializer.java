@@ -4,10 +4,10 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.ua.max.oliynick.flicker.interfaces.IInitializible;
-import com.ua.max.oliynick.flicker.singleton.ConnectionListener;
 import com.ua.max.oliynick.flicker.singleton.MainApp;
 
 import org.jivesoftware.smack.ReconnectionManager;
+import org.jivesoftware.smack.chat.ChatManager;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 
 import java.util.Observable;
@@ -22,17 +22,17 @@ public class ConnectionInitializer implements IInitializible {
 
     public ConnectionInitializer() {}
 
-    public boolean isInitialized() {
-        return isInitialized;
-    }
-
     @Override
     public void initialize(final Context context) {
+
+        if(isInitialized)
+            throw new IllegalStateException("Already initialized class ".
+                    concat(ConnectionInitializer.class.getCanonicalName()));
 
         //StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
        // StrictMode.setThreadPolicy(policy);
 
-        final ConnectionListener connectionManager = MainApp.getConnectionListener();
+        ChatManager.setDefaultMatchMode(ChatManager.MatchMode.BARE_JID);
 
         final XMPPTCPConnection connection = MainApp.getConnection();
         final ReconnectionManager reconnectionManager = ReconnectionManager.getInstanceFor(connection);
@@ -51,7 +51,7 @@ public class ConnectionInitializer implements IInitializible {
 
         final GenericObserver<Boolean> connectionListener = new GenericObserver<Boolean>(false) {
 
-            public GenericObserver<Boolean> selfRef() {
+            public GenericObserver<Boolean> _this() {
                 return this;
             }
 
@@ -72,7 +72,7 @@ public class ConnectionInitializer implements IInitializible {
                                 This listener should be removed
                                 * */
                                 MainApp.getConnectionListener().
-                                        removeConnectedPropertyListener(selfRef());
+                                        removeConnectedPropertyListener(_this());
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }

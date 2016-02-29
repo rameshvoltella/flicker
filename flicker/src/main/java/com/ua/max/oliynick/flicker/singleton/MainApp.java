@@ -5,9 +5,13 @@ import android.app.Application;
 import com.ua.max.oliynick.flicker.interfaces.IInitializible;
 import com.ua.max.oliynick.flicker.interfaces.ISettings;
 import com.ua.max.oliynick.flicker.util.ConnectionInitializer;
+import com.ua.max.oliynick.flicker.util.GenericObserver;
 
+import org.jivesoftware.smack.chat.ChatManager;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
+
+import java.util.Observable;
 
 /**
  * <p>This class initializes application at the beginning.
@@ -29,6 +33,8 @@ public class MainApp extends Application {
     /**Global connection listener*/
     private static ConnectionListener connectionListener = null;
 
+    private static ChatCreationListener chatCreationListener = null;
+
     /**Returns reference to global {@linkplain MainApp} object*/
     public MainApp getInstance(){
         return instance;
@@ -49,6 +55,11 @@ public class MainApp extends Application {
         return connectionListener;
     }
 
+    /**Returns reference to global {@linkplain ChatCreationListener} object*/
+    public static ChatCreationListener getChatCreationListener() {
+        return chatCreationListener;
+    }
+
     public MainApp() {
         super();
         instance = this;
@@ -58,17 +69,31 @@ public class MainApp extends Application {
     public void onCreate() {
         super.onCreate();
 
-
         //Initializing settings with app context
         settings = new Settings(getApplicationContext());
         connection = new XMPPTCPConnection(buildConnectionConfig(settings));
         connectionListener = new ConnectionListener(getApplicationContext());
 
+        // appending chat creation listener to the xmpp connection
+        connectionListener.addAuthPropertyListener(new GenericObserver<Boolean>() {
+            @Override
+            public void onValueChanged(Observable observable, Boolean oldValue, Boolean newValue) {
+
+                if(chatCreationListener == null) {
+                    chatCreationListener = new ChatCreationListener();
+                }
+
+                if (newValue) {
+                    chatCreationListener.attach(ChatManager.getInstanceFor(connection));
+                }
+            }
+        });
+
         /*
         Initializes xmpp connection based on user settings.
         Note that this process is invoked in a separated thread
         * */
-        IInitializible connInitializer = new ConnectionInitializer();
+        final IInitializible connInitializer = new ConnectionInitializer();
         connInitializer.initialize(getApplicationContext());
     }
 

@@ -10,7 +10,7 @@ import org.jivesoftware.smack.ReconnectionManager;
 /**
  * Created by Максим on 21.01.2016.
  */
-public class Settings implements ISettings {
+public final class Settings implements ISettings {
 
     private static final String LOCATION = "flickerAppSettings";
 
@@ -109,7 +109,7 @@ public class Settings implements ISettings {
 
     @Override
     public String getHost() {
-        return preferences.getString(HOST_KEY, "192.168.1.8");
+        return preferences.getString(HOST_KEY, "192.168.0.100");
     }
 
     @Override

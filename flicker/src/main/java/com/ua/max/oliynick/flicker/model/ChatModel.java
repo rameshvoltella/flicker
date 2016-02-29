@@ -13,13 +13,15 @@ import org.jivesoftware.smackx.chatstates.ChatStateListener;
 import org.jivesoftware.smackx.chatstates.ChatStateManager;
 
 import java.util.Collection;
+import java.util.Collections;
 
 /**
  * Created by Максим on 23.02.2016.
  */
+//@ContextSingleton
 public final class ChatModel extends IChatModel {
 
-    private final Chat chat;
+    private Chat chat;
 
     private final class MessageEventProcessor implements ChatStateListener {
 
@@ -55,18 +57,29 @@ public final class ChatModel extends IChatModel {
         this.chat.addMessageListener(new MessageEventProcessor());
     }
 
+    public Chat getChat() {
+        return chat;
+    }
+
+    public void addChat(Chat chat) {
+        chat.addMessageListener(new MessageEventProcessor());
+        this.chat = chat;
+    }
+
     @Override
     public Collection<Message> loadMessages(int max) {
-        return null;
+        //TODO finish
+        return Collections.emptyList();
     }
 
     @Override
     public Collection<Message> nextMessages(int max) {
-        return null;
+        //TODO finish
+        return Collections.emptyList();
     }
 
     @Override
-    public void sendMessage(Message message) throws ChatException {
+    public void sendMessage(String message) throws ChatException {
 
         try {
             chat.sendMessage(message);

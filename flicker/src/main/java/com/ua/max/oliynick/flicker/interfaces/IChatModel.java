@@ -51,7 +51,7 @@ public abstract class IChatModel {
 
     public abstract Collection<Message> nextMessages(int max);
 
-    public abstract void sendMessage(Message message) throws ChatException;
+    public abstract void sendMessage(String message) throws ChatException;
 
     public abstract void sendComposingNotification();
 
