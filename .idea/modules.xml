@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Flicker.iml" filepath="$PROJECT_DIR$/Flicker.iml" />
       <module fileurl="file://$PROJECT_DIR$/flicker/flicker.iml" filepath="$PROJECT_DIR$/flicker/flicker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/xmppextensions/xmppextensions.iml" filepath="$PROJECT_DIR$/xmppextensions/xmppextensions.iml" />
     </modules>
   </component>
 </project>

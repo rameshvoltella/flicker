@@ -2,6 +2,8 @@ package com.ua.max.oliynick.flicker.util;
 
 import org.jivesoftware.smack.packet.Presence;
 
+import java.util.Date;
+
 /**
  * Created by Максим on 20.02.2016.
  */
@@ -11,7 +13,10 @@ public class LastChatModel {
 
     private final String id;
     private String login;
+    private String jid;
     private String message;
+
+    private Date time;
     private Presence.Type presenceType;
 
     public LastChatModel(final String id) {
@@ -46,6 +51,21 @@ public class LastChatModel {
         this.login = login;
     }
 
+    public String getJid() {
+        return jid;
+    }
+
+    public void setJid(String jid) {
+        this.jid = jid;
+    }
+
+    public Date getTime() {
+        return time;
+    }
+
+    public void setTime(Date time) {
+        this.time = time;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -57,6 +77,7 @@ public class LastChatModel {
         if (!id.equals(that.id)) return false;
         if (login != null ? !login.equals(that.login) : that.login != null) return false;
         if (message != null ? !message.equals(that.message) : that.message != null) return false;
+        if (time != null ? !time.equals(that.time) : that.time != null) return false;
         return presenceType == that.presenceType;
 
     }

@@ -4,9 +4,11 @@ import android.app.Application;
 import android.content.Context;
 
 import com.google.inject.AbstractModule;
+import com.ua.max.oliynick.flicker.interfaces.IChatModel;
 import com.ua.max.oliynick.flicker.interfaces.IContactsModel;
 import com.ua.max.oliynick.flicker.interfaces.ILastChatsModel;
 import com.ua.max.oliynick.flicker.interfaces.ILoginModel;
+import com.ua.max.oliynick.flicker.model.ChatModel;
 import com.ua.max.oliynick.flicker.model.ContactModel;
 import com.ua.max.oliynick.flicker.model.LastChatsModel;
 import com.ua.max.oliynick.flicker.model.LoginModel;
@@ -33,6 +35,6 @@ public class Bindings extends AbstractModule {
         bind(ILoginModel.class).to(LoginModel.class);
         bind(IContactsModel.class).to(ContactModel.class);
         bind(ILastChatsModel.class).to(LastChatsModel.class);
-        //bind(IChatModel.class).to(ChatModel.class);
+        bind(IChatModel.class).to(ChatModel.class);
     }
 }

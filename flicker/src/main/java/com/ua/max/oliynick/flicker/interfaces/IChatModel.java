@@ -3,8 +3,7 @@ package com.ua.max.oliynick.flicker.interfaces;
 import com.ua.max.oliynick.flicker.error.ChatException;
 import com.ua.max.oliynick.flicker.util.GenericObservable;
 import com.ua.max.oliynick.flicker.util.GenericObserver;
-
-import org.jivesoftware.smack.packet.Message;
+import com.ua.max.oliynick.flicker.util.MessageModel;
 
 import java.util.Collection;
 
@@ -13,7 +12,7 @@ import java.util.Collection;
  */
 public abstract class IChatModel {
 
-    private GenericObservable<Message> messageObservable = null;
+    private GenericObservable<MessageModel> messageObservable = null;
     private GenericObservable<String> presenceObservable = null;
     private GenericObservable<String> infoObservable = null;
 
@@ -23,11 +22,11 @@ public abstract class IChatModel {
         infoObservable = new GenericObservable<>();
     }
 
-    public void addMessageObserver(final GenericObserver<Message> observer) {
+    public void addMessageObserver(final GenericObserver<MessageModel> observer) {
         messageObservable.addObserver(observer);
     }
 
-    public void removeMessageObserver(final GenericObserver<Message> observer) {
+    public void removeMessageObserver(final GenericObserver<MessageModel> observer) {
         messageObservable.deleteObserver(observer);
     }
 
@@ -47,15 +46,15 @@ public abstract class IChatModel {
         infoObservable.deleteObserver(presenceObserver);
     }
 
-    public abstract Collection<Message> loadMessages(int max);
+    public abstract Collection<MessageModel> loadMessages(int max) throws Exception;
 
-    public abstract Collection<Message> nextMessages(int max);
+    public abstract Collection<MessageModel> nextMessages(int max) throws Exception;
 
     public abstract void sendMessage(String message) throws ChatException;
 
     public abstract void sendComposingNotification();
 
-    protected void fireNewMessage(final Message message) {
+    protected void fireNewMessage(final MessageModel message) {
         messageObservable.setValue(message);
     }
 

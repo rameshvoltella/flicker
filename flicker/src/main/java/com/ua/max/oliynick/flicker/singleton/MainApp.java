@@ -33,7 +33,7 @@ public class MainApp extends Application {
     /**Global connection listener*/
     private static ConnectionListener connectionListener = null;
 
-    private static ChatCreationListener chatCreationListener = null;
+    private static ChatCreationManager chatCreationListener = null;
 
     /**Returns reference to global {@linkplain MainApp} object*/
     public MainApp getInstance(){
@@ -55,8 +55,8 @@ public class MainApp extends Application {
         return connectionListener;
     }
 
-    /**Returns reference to global {@linkplain ChatCreationListener} object*/
-    public static ChatCreationListener getChatCreationListener() {
+    /**Returns reference to global {@linkplain ChatCreationManager} object*/
+    public static ChatCreationManager getChatCreationManager() {
         return chatCreationListener;
     }
 
@@ -80,7 +80,7 @@ public class MainApp extends Application {
             public void onValueChanged(Observable observable, Boolean oldValue, Boolean newValue) {
 
                 if(chatCreationListener == null) {
-                    chatCreationListener = new ChatCreationListener();
+                    chatCreationListener = new ChatCreationManager();
                 }
 
                 if (newValue) {

@@ -1,1 +1,1 @@
-include ':flicker'
+include ':flicker', ':xmppextensions'

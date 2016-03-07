@@ -19,12 +19,8 @@ import android.widget.TextView;
 import com.google.inject.Inject;
 import com.ua.max.oliynick.flicker.interfaces.IContactItemController;
 import com.ua.max.oliynick.flicker.interfaces.IContactsModel;
-import com.ua.max.oliynick.flicker.singleton.MainApp;
 import com.ua.max.oliynick.flicker.util.ContactItemModel;
 import com.ua.max.oliynick.flicker.util.PresenceUtils;
-
-import org.jivesoftware.smack.chat.Chat;
-import org.jivesoftware.smack.chat.ChatManager;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -112,13 +108,9 @@ public class ContactFragment extends RoboFragment implements IContactItemControl
                 @Override
                 public void onClick(View v) {
                     // TODO show message fragment
-
-                    ChatManager cm = ChatManager.getInstanceFor(MainApp.getConnection());
-                    Chat ch = cm.createChat(entry.getEntry().getUser());
-
                     Intent intent = new Intent(context, ChatActivity.class);
-                    ChatActivity.setChat(ch);
-
+                    intent.putExtra(ChatActivity.JID_KEY, entry.getEntry().getUser());
+                    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     startActivity(intent);
                 }
             });

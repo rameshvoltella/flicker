@@ -22,7 +22,7 @@ import java.util.Map;
  * observers will be notified</p>
  * Created by Максим on 19.02.2016.
  */
-public final class ChatCreationListener {
+public final class ChatCreationManager {
 
     /**Observable property*/
     private GenericObservable<ChatWrapper> chatCreationProp = null;
@@ -31,7 +31,7 @@ public final class ChatCreationListener {
     /**Holds all chats*/
     private Map<String, ChatWrapper> chatMap = null;
 
-    ChatCreationListener() {
+    ChatCreationManager() {
 
         chatMap = new HashMap<>();
         chatCreationProp = new GenericObservable<>();
@@ -78,6 +78,10 @@ public final class ChatCreationListener {
      * */
     public void removeChatCreationListener(GenericObserver<ChatWrapper> observer) {
         chatCreationProp.deleteObserver(observer);
+    }
+
+    public Chat createChat(final String jid) {
+        return ChatManager.getInstanceFor(MainApp.getConnection()).createChat(jid);
     }
 
     /**<p>

@@ -2,6 +2,7 @@ package com.ua.max.oliynick.flicker.activity;
 
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.internal.widget.ListViewCompat;
 import android.view.View;
@@ -9,16 +10,16 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.inject.Inject;
 import com.ua.max.oliynick.flicker.error.ChatException;
 import com.ua.max.oliynick.flicker.interfaces.IChatModel;
 import com.ua.max.oliynick.flicker.model.ChatModel;
 import com.ua.max.oliynick.flicker.singleton.MainApp;
 import com.ua.max.oliynick.flicker.util.GenericObserver;
+import com.ua.max.oliynick.flicker.util.MessageModel;
 import com.ua.max.oliynick.flicker.widgets.RoundedImageView;
-
-import org.jivesoftware.smack.chat.Chat;
-import org.jivesoftware.smack.packet.Message;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +35,17 @@ import roboguice.inject.InjectView;
 @ContentView(R.layout.chat)
 public class ChatActivity extends BaseActivity {
 
-    //@Inject
+    /**
+     * <p>
+     *     Represents chat jid key. jid should be passed
+     *     via intent as extra string
+     * </p>
+     * */
+    public static final String JID_KEY = ChatActivity.class.getCanonicalName().concat(".jid_key");
+
+    private enum Pos {left, right};
+
+    @Inject
     private IChatModel model;
 
     @InjectView(R.id.msgListView)
@@ -54,20 +65,8 @@ public class ChatActivity extends BaseActivity {
 
     ArrayAdapter<String> itemsAdapter = null;
 
-    private GenericObserver<Message> messageObserver = null;
+    private GenericObserver<MessageModel> messageObserver = null;
     private GenericObserver<String> presenceObserver = null;
-
-    private static Chat chat = null;
-
-    public static synchronized void setChat(Chat c) {
-        chat = c;
-    }
-
-    private static synchronized Chat getChat() {
-        Chat tmp = chat;
-        chat = null;
-        return tmp;
-    }
 
     public ChatActivity() {
         super();
@@ -90,12 +89,18 @@ public class ChatActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        model = new ChatModel(getChat());
+        ((ChatModel)model).setChat(getIntent().getStringExtra(ChatActivity.JID_KEY));
 
         List<String> messages = new ArrayList<>(15);
 
-        for(Message m : model.loadMessages(15)) {
-            messages.add(new String(m.getFrom() + " " + m.getBody()));
+        try {
+            for(MessageModel m : model.loadMessages(15)) {
+                messages.add(new String(m.getDirection() + " " + m.getBody()));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, "failed to load initial messages for ".
+                    concat(getIntent().getStringExtra(ChatActivity.JID_KEY)), Toast.LENGTH_LONG);
         }
 
         itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, messages);
@@ -119,14 +124,13 @@ public class ChatActivity extends BaseActivity {
 
     private void initObservers() {
 
-        messageObserver = new GenericObserver<Message>() {
+        messageObserver = new GenericObserver<MessageModel>() {
             @Override
-            public void onValueChanged(final Observable observable, final Message oldValue, final Message newValue) {
+            public void onValueChanged(final Observable observable, final MessageModel oldValue, final MessageModel newValue) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        itemsAdapter.add(newValue.getFrom() + " " +newValue.getBody());
-                        itemsAdapter.notifyDataSetChanged();
+                        addMessage(newValue.getBody(), newValue.getTitle(), Pos.left);
                     }
                 });
 
@@ -158,11 +162,42 @@ public class ChatActivity extends BaseActivity {
 
     private void onSend() {
 
-        try {
-            model.sendMessage(messArea.getText().toString());
-        } catch (ChatException e) {
-            e.printStackTrace();
-        }
+        final String body = messArea.getText().toString();
+        final AsyncTask<String, Void, String> task = new AsyncTask<String, Void, String>() {
+
+            @Override
+            protected void onPostExecute(String errMessage) {
+                super.onPostExecute(errMessage);
+
+                if(errMessage == null) {
+                    messArea.setText(null);
+                    addMessage(body, MainApp.getConnection().getUser(), Pos.right);
+                } else {
+                    Toast.makeText(getBaseContext(), "error occurred while sending message", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+
+                try {
+                    model.sendMessage(body);
+                } catch (ChatException e) {
+                    e.printStackTrace();
+                    //TODO add proper message
+                    return e.getMessage();
+                }
+
+                return null;
+            }
+        };
+
+        task.execute();
+    }
+
+    private void addMessage(final String message, final String title, final Pos pos) {
+        itemsAdapter.add(title + " " + message);
+        itemsAdapter.notifyDataSetChanged();
     }
 
 }

@@ -52,24 +52,35 @@
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/linearLayout"
+        >
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:singleLine="true"
+        android:ellipsize="end"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Message"
-        android:layout_centerVertical="true"
         android:id="@+id/last_conv_msg"
-        android:layout_toEndOf="@+id/linearLayout" />
+         />
 
     <ImageButton
         android:id="@+id/last_conv_msgBtn"
         style="@style/iconButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_weight="0"
         android:paddingEnd="@dimen/contacts_btn_pad"
         android:paddingStart="@dimen/contacts_btn_pad"
-        android:layout_centerVertical="true"
-        android:layout_alignParentEnd="true"
         android:src="@drawable/ic_chat_bubble_black_24dp" />
+
+    </LinearLayout>
 
 </RelativeLayout>
